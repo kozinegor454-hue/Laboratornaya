@@ -1,0 +1,161 @@
+﻿<Window x:Class="HabitTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Управление привычками" Height="700" Width="1000" Background="White">
+    <DockPanel>
+
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Сохранить" Click="MenuSave_Click"/>
+                <MenuItem Header="Загрузить" Click="MenuLoad_Click"/>
+                <Separator/>
+                <MenuItem Header="Выход" Click="MenuExit_Click"/>
+            </MenuItem>
+            <MenuItem Header="Правка">
+                <MenuItem Header="Копировать" Command="Copy"/>
+                <MenuItem Header="Вставить" Command="Paste"/>
+            </MenuItem>
+            <MenuItem Header="Вид">
+                <MenuItem Header="Светлая тема" Click="LightTheme_Click"/>
+                <MenuItem Header="Темная тема" Click="DarkTheme_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Content="Сохранить" Click="MenuSave_Click"/>
+                <Button Content="Загрузить" Click="MenuLoad_Click"/>
+                <Separator/>
+                <ToggleButton x:Name="EditModeToggle" Content="Режим редактирования" Click="EditModeToggle_Click"/>
+            </ToolBar>
+        </ToolBarTray>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Готово"/>
+            </StatusBarItem>
+        </StatusBar>
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="0" x:Name="ExtraPanelColumn"/>
+            </Grid.ColumnDefinitions>
+
+            <TabControl x:Name="MainTabControl" SelectionChanged="MainTabControl_SelectionChanged" Grid.Column="0">
+                <TabItem Header="Личные данные">
+                    <ScrollViewer>
+                        <WrapPanel Orientation="Horizontal" Margin="10">
+                            <GroupBox Header="Основная информация" Width="300" Margin="5">
+                                <StackPanel Margin="5">
+                                    <Label Content="Имя:"/>
+                                    <TextBox x:Name="FirstNameTextBox" Margin="0,0,0,5"/>
+                                    <Label Content="Фамилия:"/>
+                                    <TextBox x:Name="LastNameTextBox" Margin="0,0,0,5"/>
+                                    <Label Content="Дата рождения:"/>
+                                    <DatePicker x:Name="BirthDatePicker" Margin="0,0,0,5"/>
+                                    <Label Content="Аватар:"/>
+                                    <Border BorderBrush="Gray" BorderThickness="1" Width="100" Height="100" HorizontalAlignment="Left" Margin="0,0,0,5">
+                                        <Image x:Name="AvatarImage" Stretch="UniformToFill"/>
+                                    </Border>
+                                    <Button Content="Загрузить фото" Click="LoadAvatar_Click" Width="120" HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="Дополнительные данные" Width="300" Margin="5">
+                                <StackPanel Margin="5">
+                                    <Label Content="Пароль:"/>
+                                    <PasswordBox x:Name="UserPasswordBox" Margin="0,0,0,5"/>
+                                    <Label Content="Образование:"/>
+                                    <ComboBox x:Name="EducationComboBox" Margin="0,0,0,5">
+                                        <ComboBoxItem Content="Среднее"/>
+                                        <ComboBoxItem Content="Высшее"/>
+                                    </ComboBox>
+                                    <Label Content="Хобби:"/>
+                                    <ListBox x:Name="HobbiesListBox" SelectionMode="Multiple" Height="90" Margin="0,0,0,5">
+                                        <ListBoxItem Content="Спорт"/>
+                                        <ListBoxItem Content="Программирование"/>
+                                    </ListBox>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="Настройки отображения" Width="300" Margin="5">
+                                <StackPanel Margin="5">
+                                    <CheckBox x:Name="NotifyCheckBox" Content="Уведомления" Margin="0,0,0,5"/>
+                                    <Label Content="Активность:" FontWeight="Bold"/>
+                                    <RadioButton x:Name="MediumActivityRb" Content="Средний" GroupName="Activity" IsChecked="True"/>
+                                    <Button Content="Сохранить" Click="SaveProfile_Click" Margin="0,10,0,5" Background="LightGreen"/>
+                                    <Button Content="Сброс" Click="ResetProfile_Click" Background="LightCoral"/>
+                                </StackPanel>
+                            </GroupBox>
+                        </WrapPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Привычки">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,0,0,10">
+                            <Label Content="Привычка:"/>
+                            <TextBox x:Name="NewHabitTextBox" Width="200" Margin="5,0"/>
+                            <Button Content="Добавить" Click="AddHabit_Click" Width="90"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="HabitsDataGrid" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,0,10,0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
+                                <DataGridCheckBoxColumn Header="Выполнено" Binding="{Binding IsCompleted}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <Calendar x:Name="HabitCalendar" Margin="0,0,0,10"/>
+                            <RichTextBox Height="80" Margin="0,0,0,10"/>
+                            <RepeatButton Content="+" Click="RepeatButton_Click" Delay="500" Interval="100" Width="30" HorizontalAlignment="Left"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,10,0,0">
+                            <Label Content="Продуктивность:"/>
+                            <Slider x:Name="ProductivitySlider" Minimum="0" Maximum="100" ValueChanged="Sliders_ValueChanged"/>
+                            <ProgressBar x:Name="DayProgressBar" Minimum="0" Maximum="100" Height="20"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Статистика">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <TreeView x:Name="StatsTreeView" Grid.Column="0">
+                            <TreeViewItem Header="Здоровье" IsExpanded="True">
+                                <TreeViewItem Header="Спорт"/>
+                            </TreeViewItem>
+                        </TreeView>
+                        <ListView x:Name="StatsListView" Grid.Column="1">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="День" DisplayMemberBinding="{Binding Day}" Width="120"/>
+                                    <GridViewColumn Header="Сделано" DisplayMemberBinding="{Binding Completed}" Width="100"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+            <Border x:Name="ExtraPanel" Grid.Column="1" Background="WhiteSmoke" Visibility="Collapsed" BorderBrush="Gray" BorderThickness="1,0,0,0">
+                <TextBlock Text="Дополнительная панель" Margin="10"/>
+            </Border>
+        </Grid>
+
+
+    </DockPanel>
+</Window>
